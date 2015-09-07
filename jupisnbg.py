@@ -6,7 +6,7 @@ server = 'jabber.ccc.de'
 nick = 'bot'
 password = getpass('Password for %s@%s:' % (user, server))
 room = 'jupisnbg@conference.jabber.ccc.de'
-room_password = etpass('Password for %s:' % (room))
+room_password = getpass('Password for %s:' % (room))
 
 def message_callback(client, stanza):
     sender = stanza.getFrom()
