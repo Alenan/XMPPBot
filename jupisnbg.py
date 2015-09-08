@@ -11,9 +11,11 @@ room_password = getpass('Password for %s:' % (room))
 def message_callback(client, stanza):
     sender = stanza.getFrom()
     message = stanza.getBody()
-    jid = '%s%s' % (sender.getNode(), sender.getDomain())
+    jid = '%s@%s' % (sender.getNode(), sender.getDomain())
     if jid == room:
-        print('%s: %s' % (sender, message))
+        print('%s: %s' % (sender.getResource(), message))
+    else:
+        print('%s: %s' % (sender.getNode(), message))
 
 client = Client(server, debug=[])
 client.connect()
