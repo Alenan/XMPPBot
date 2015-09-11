@@ -15,45 +15,64 @@ def message_callback(client, stanza):
     if sender.bareMatch(room):
         sender_nick = sender.getResource()
         print('[r] %s: %s' % (sender_nick, message))
+
+        # message forwarding
         for extension in extensions.keys():
             if message.startswith('%s+%s' % (nick, extension)):
                 send_msg(extensions[extension], ' '.join(message.split(' ')[1:]))
                 return
 
+        # query extension list
         m = match('\.whois %s\+(.*)' % (nick), message)
         if m:
             extension = m.group(1)
-            msg_room('%s+%s is %s.' % (nick, extension, extensions.get(extension, 'not managed')))
+            msg_room('%s+%s is %s.' % (nick, extension,
+                                       extensions.get(extension, 'not managed')))
             return
 
+        # insult people
         m = match('\.insult (.*)', message)
         if m:
             msg_room('%s is an idiot.' % (m.group(1)))
             return
 
+        # execute command
         m = match('\.([^ ]*) (.*)', message)
         if m:
             verb = m.group(1)
             rest = m.group(2)
-            if not verb.endswith('s') and not verb.endswith('x'):
+
+            # third person singular form of verb (non-irregular)
+            if verb.endswith('s') or verb.endswith('x'):
+                verb += 'es'
+            else:
                 verb += 's'
+
+            # plural form of sender_nick
             if not sender_nick.endswith('s') and not sender_nick.endswith('x'):
                 sender_nicks = sender_nick + 's'
+
+            # fix pronoums
             rest = rest.split(' ')
             for i, word in enumerate(rest):
                 if word == 'me':
                     rest[i] = sender_nick
                 elif word == 'my':
                     rest[i] = sender_nicks
+                elif word == 'you':
+                    rest[i] = 'they'
                 elif word == 'your':
                     rest[i] = 'their'
-            msg_room('/me %s %s' % (verb, ' '.join(rest)))
+            rest = ' '.join(rest)
+
+            msg_room('/me %s %s' % (verb, rest))
             return
     else:
         sender_nick = sender.getNode()
         print('[p] %s: %s' % (sender_nick, message))
         if not sender_nick in extensions.keys():
             # XXX nick collisions!
+            # XXX doesn't work as expected, changes nick instead of joining room again
             join_room(sender_nick)
             extensions[sender_nick] = sender
         msg_room(message)
