@@ -30,6 +30,25 @@ def message_callback(client, stanza):
         if m:
             msg_room('%s is an idiot.' % (m.group(1)))
             return
+
+        m = match('\.([^ ]*) (.*)', message)
+        if m:
+            verb = m.group(1)
+            rest = m.group(2)
+            if not verb.endswith('s') and not verb.endswith('x'):
+                verb += 's'
+            if not sender_nick.endswith('s') and not sender_nick.endswith('x'):
+                sender_nicks = sender_nick + 's'
+            rest = rest.split(' ')
+            for i, word in enumerate(rest):
+                if word == 'me':
+                    rest[i] = sender_nick
+                elif word == 'my':
+                    rest[i] = sender_nicks
+                elif word == 'your':
+                    rest[i] = 'their'
+            msg_room('/me %s %s' % (verb, ' '.join(rest)))
+            return
     else:
         sender_nick = sender.getNode()
         print('[p] %s: %s' % (sender_nick, message))
@@ -49,6 +68,7 @@ def join_room(extension=None):
     else:
         presence = Presence(to='%s/%s' % (room, nick))
     presence.setTag('x', namespace=NS_MUC).setTagData('password', room_password)
+    presence.getTag('x').addChild('history',{'maxchars':'0','maxstanzas':'0'})
     client.send(presence)
 
 def msg_room(message):
