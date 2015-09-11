@@ -1,18 +1,17 @@
 """
-Usage: @jupisnbg <username_from_requestor> message
-
+Usage: [at]jupisnbg full_jabber_id_of_recipient message
 """
 
 from getpass import getpass
 from xmpp import Client, NS_MUC, Presence
 from xmpp.protocol import *
 
-user = 'piggy'
-server = 'jabber.ccc.de'
-nick = 'bot'
-password = getpass('Password for %s@%s:' % (user, server))
+user = raw_input("Username: ")
+server = raw_input("Server: ")
+nick = 'jupisnbg-bot'
+password = getpass('Password for %s@%s: ' % (user, server))
 room = 'jupisnbg@conference.jabber.ccc.de'
-room_password = getpass('Password for %s:' % (room))
+room_password = getpass('Password for %s: ' % (room))
 
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
@@ -25,9 +24,12 @@ def message_callback(client, stanza): # get msgs
             jupi_message = message.replace("@jupisnbg", "") 
             jupi_message = jupi_message.split(" ", 1)[1]
             receiver = jupi_message.split(" ", 1)[0]
-            jupi_message = jupi_message.replace(receiver, "")
-            jupi_reply = "[" + jupi_repliedby +  "]: " + jupi_message
-            client.send(Message(to = receiver, body = jupi_reply, typ = "chat")) #wieso geht das nicht?
+            if "@" in receiver and "." in receiver: 
+                jupi_message = jupi_message.replace(receiver, "")
+                jupi_reply = "[" + jupi_repliedby +  "]: " + jupi_message
+                client.send(Message(to = receiver, body = jupi_reply, typ = "chat"))
+            elif "--help" in receiver: 
+                client.send(Message(to = room, body = "Usage: [at]jupisnbg full_jabber_id_of_recipient message.", typ = "groupchat"))
         print('%s: %s' % (sender.getResource(), message))
     else:
         sendertext = "[" + jid  + "]: " + message
@@ -35,12 +37,11 @@ def message_callback(client, stanza): # get msgs
         print('%s: %s' % (sender.getNode(), message))
 
 
-
 client = Client(server, debug=[])
 client.connect()
 while not client.auth(user, password):
     print('Unable to authorize.')
-    password = getpass('Password for %s@%s:' % (user, server))
+    password = getpass('Password for %s@%s: ' % (user, server))
 client.RegisterHandler('message', message_callback)
 client.sendInitPresence()
 presence = Presence(to='%s/%s' % (room, nick))
