@@ -48,7 +48,7 @@ def message_callback(client, stanza):
             else:
                 verb += 's'
 
-            # plural form of sender_nick
+            # genitive form of sender_nick
             if not sender_nick.endswith('s') and not sender_nick.endswith('x'):
                 sender_nicks = sender_nick + 's'
 
