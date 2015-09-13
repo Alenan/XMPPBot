@@ -12,6 +12,7 @@ extensions = {}
 def message_callback(client, stanza):
     sender = stanza.getFrom()
     message = stanza.getBody()
+
     if sender.bareMatch(room):
         sender_nick = sender.getResource()
         print('[r] %s: %s' % (sender_nick, message))
@@ -23,7 +24,7 @@ def message_callback(client, stanza):
                 return
 
         # query extension list
-        m = match('\.whois %s\+(.*)' % (nick), message)
+        m = match(r'\.whois %s\+(.*)' % (nick), message)
         if m:
             extension = m.group(1)
             msg_room('%s+%s is %s.' % (nick, extension,
@@ -31,13 +32,23 @@ def message_callback(client, stanza):
             return
 
         # insult people
-        m = match('\.insult (.*)', message)
+        m = match(r'\.insult (.*)', message)
         if m:
             msg_room('%s is an idiot.' % (m.group(1)))
             return
 
+        # say things
+        m = match(r'''\.say (["']?)(.*)\1''', message)
+        if m:
+            text = m.group(2)
+            if not text:
+                msg_room(' ')
+            else:
+                msg_room(text)
+            return
+
         # execute command
-        m = match('\.([^ ]*) (.*)', message)
+        m = match(r'\.([^ ]*) ?(.*)', message)
         if m:
             verb = m.group(1)
             rest = m.group(2)
