@@ -55,7 +55,7 @@ def message_callback(client, stanza):
             # fix pronoums
             rest = rest.split(' ')
             for i, word in enumerate(rest):
-                if word == 'me':
+                if word == 'me' or word == 'myself':
                     rest[i] = sender_nick
                 elif word == 'my':
                     rest[i] = sender_nicks
@@ -63,6 +63,8 @@ def message_callback(client, stanza):
                     rest[i] = 'they'
                 elif word == 'your':
                     rest[i] = 'their'
+                elif word == 'yourself':
+                    rest[i] = 'themself'
             rest = ' '.join(rest)
 
             msg_room('/me %s %s' % (verb, rest))
