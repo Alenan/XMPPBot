@@ -2,14 +2,13 @@ from getpass import getpass
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
 
-user = 'moscito@jabber.ccc.de/vbot'
+user = 'jupisnbg@riseup.net/bot'
 user_password = getpass('Password for %s:' % (user))
 room = 'jupisnbg@conference.jabber.ccc.de'
 room_password = getpass('Password for %s:' % (room))
-nick = 'vbot'
-extensions = {}
+nick = 'jupisnbg-bot'
 
-def message_callback(client, stanza):
+def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
     message = stanza.getBody()
 
@@ -18,18 +17,18 @@ def message_callback(client, stanza):
         print('[r] %s: %s' % (sender_nick, message))
 
         # message forwarding
-        for extension in extensions.keys():
-            if message.startswith('%s+%s' % (nick, extension)):
-                send_msg(extensions[extension], ' '.join(message.split(' ')[1:]))
-                return
-
-        # query extension list
-        m = match(r'\.whois %s\+(.*)' % (nick), message)
-        if m:
-            extension = m.group(1)
-            msg_room('%s+%s is %s.' % (nick, extension,
-                                       extensions.get(extension, 'not managed')))
-            return
+	if "@jupisnbg" in message:
+            # replied from group
+            jupi_repliedby = sender.getResource()
+            jupi_message = message.replace("@jupisnbg", "") 
+            jupi_message = jupi_message.split(" ", 1)[1]
+            receiver = jupi_message.split(" ", 1)[0]
+            if "@" in receiver and "." in receiver: 
+                jupi_message = jupi_message.replace(receiver, "")
+                jupi_reply = "[" + jupi_repliedby +  "]: " + jupi_message
+                client.send(Message(to = receiver, body = jupi_reply, typ = "chat"))
+            elif "--help" in receiver: 
+                client.send(Message(to = room, body = "Usage: [at]jupisnbg full_jabber_id_of_recipient message.", typ = "groupchat"))
 
         # insult people
         m = match(r'\.insult (.*)', message)
@@ -83,12 +82,8 @@ def message_callback(client, stanza):
     else:
         sender_nick = sender.getNode()
         print('[p] %s: %s' % (sender_nick, message))
-        if not sender_nick in extensions.keys():
-            # XXX nick collisions!
-            # XXX doesn't work as expected, changes nick instead of joining room again
-            join_room(sender_nick)
-            extensions[sender_nick] = sender
-        msg_room(message)
+        sendertext = "[" + str(sender)  + "]: " + message
+        test = client.send(Message(to = room, body = sendertext, typ = "groupchat"))
 
 def presence_callback(client, stanza):
     # not used yet
