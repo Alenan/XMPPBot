@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from getpass import getpass
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
@@ -84,7 +86,7 @@ def message_callback(client, stanza): # get msgs
     else:
         sender_nick = sender.getNode()
         print('[p] %s: %s' % (sender_nick, message))
-        sendertext = "[" + str(sender)  + "]: " + message
+        sendertext = "[" + unicode(sender)  + "]: " + message
         test = client.send(Message(to = room, body = sendertext, typ = "groupchat"))
 
 def presence_callback(client, stanza):
