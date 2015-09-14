@@ -67,6 +67,8 @@ def message_callback(client, stanza): # get msgs
             # genitive form of sender_nick
             if not sender_nick.endswith('s') and not sender_nick.endswith('x'):
                 sender_nicks = sender_nick + 's'
+            else
+                sender_nicks = sender_nick
 
             # fix pronoums
             rest = rest.split(' ')
