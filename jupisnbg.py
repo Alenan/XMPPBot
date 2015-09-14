@@ -2,7 +2,9 @@ from getpass import getpass
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
 
-user = 'jupisnbg@riseup.net/bot'
+user = raw_input("Username: ")
+server = raw_input("Server: ") 
+user = user + "@" + server + "/bot"
 user_password = getpass('Password for %s:' % (user))
 room = 'jupisnbg@conference.jabber.ccc.de'
 room_password = getpass('Password for %s:' % (room))
