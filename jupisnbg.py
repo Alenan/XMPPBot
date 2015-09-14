@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
+from ConfigParser import ConfigParser
 from getpass import getpass
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
 
-user = raw_input("Username: ")
-server = raw_input("Server: ") 
-user = user + "@" + server + "/bot"
-user_password = getpass('Password for %s:' % (user))
-room = 'jupisnbg@conference.jabber.ccc.de'
-room_password = getpass('Password for %s:' % (room))
-nick = 'jupisnbg-bot'
+config = ConfigParser()
+config.read('jupisnbg.cfg')
+user = config.get('user', 'jid')
+user_password = config.get('user', 'password')
+room = config.get('room', 'jid')
+room_password = config.get('room', 'password')
+nick = config.get('room', 'nick')
 
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
