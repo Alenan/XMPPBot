@@ -18,7 +18,7 @@ def message_callback(client, stanza): # get msgs
 
     if sender.bareMatch(room):
         sender_nick = sender.getResource()
-        print('[r] %s: %s' % (unicode(sender_nick), unicode(message)))
+        print(('[r] %s: %s' % (sender_nick, message)).encode('utf-8'))
 
         # message forwarding
 	if "@jupisnbg" in message:
@@ -85,7 +85,7 @@ def message_callback(client, stanza): # get msgs
             return
     else:
         sender_nick = sender.getNode()
-        print('[p] %s: %s' % (sender_nick, message))
+        print(('[p] %s: %s' % (sender_nick, message)).encode('utf-8'))
         sendertext = "[" + unicode(sender)  + "]: " + message
         test = client.send(Message(to = room, body = sendertext, typ = "groupchat"))
 
