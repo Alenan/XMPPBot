@@ -18,7 +18,7 @@ def message_callback(client, stanza): # get msgs
 
     if sender.bareMatch(room):
         sender_nick = sender.getResource()
-        print('[r] %s: %s' % (sender_nick, message))
+        print('[r] %s: %s' % (unicode(sender_nick), unicode(message)))
 
         # message forwarding
 	if "@jupisnbg" in message:
