@@ -15,6 +15,7 @@ nick = 'jupisnbg-bot'
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
     message = stanza.getBody()
+    message = unicode(message)
 
     if sender.bareMatch(room):
         sender_nick = sender.getResource()
