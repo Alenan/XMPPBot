@@ -58,7 +58,10 @@ def message_callback(client, stanza): # get msgs
         if m:
             faces = int(m.group(1))
             msg_room('/me throws a dice with %d faces.' % (faces))
-            msg_room('The dice shows %d (trust me).' % (randint(0, faces + 1)))
+            if faces:
+                msg_room('The dice shows %d (trust me).' % (randint(1, faces)))
+            else:
+                msg_room('fuck you. -.-')
             return
 
         # execute command
