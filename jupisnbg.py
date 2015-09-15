@@ -2,6 +2,7 @@
 
 from ConfigParser import ConfigParser
 from getpass import getpass
+from random import randint
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
 
@@ -50,6 +51,14 @@ def message_callback(client, stanza): # get msgs
                 msg_room(' ')
             else:
                 msg_room(text)
+            return
+
+        # throw a dice
+        m = match(r'\.dice (\d+)', message)
+        if m:
+            faces = int(m.group(1))
+            msg_room('/me throws a dice with %d faces.' % (faces))
+            msg_room('The dice shows %d (trust me).' % (randint(0, faces + 1)))
             return
 
         # execute command
