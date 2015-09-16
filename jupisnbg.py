@@ -18,6 +18,9 @@ nick = config.get('room', 'nick')
 with open('witze.txt') as f:
     jokes = f.read().splitlines()
 
+with open('witze_anarchy.txt') as g:
+    jokes_anarchy = g.read().splitlines()
+
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
     message = stanza.getBody()
@@ -77,9 +80,13 @@ def message_callback(client, stanza): # get msgs
             return
 
         # make a joke
-        m = match(r'\.joke', message)
+        m = match(r'''\.joke (["']?)(.*)\1''', message)
         if m:
-            msg_room(choice(jokes))
+            text = m.group(2)
+            if text == "anarchy":
+                msg_room(choice(jokes_anarchy))
+            else:
+                msg_room(choice(jokes))
             return
 
         # execute command
