@@ -2,7 +2,7 @@
 
 from ConfigParser import ConfigParser
 from getpass import getpass
-from random import randint
+from random import choice, randint
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
 from urllib import urlopen
@@ -14,6 +14,9 @@ user_password = config.get('user', 'password')
 room = config.get('room', 'jid')
 room_password = config.get('room', 'password')
 nick = config.get('room', 'nick')
+
+with open('witze.txt') as f:
+    jokes = f.readlines()
 
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
@@ -71,6 +74,12 @@ def message_callback(client, stanza): # get msgs
             link = urlopen('http://random.cat/meow')
             pic = link.read()
             msg_room("uhm... ok. Here is a picture of a cute cat: %s." % (pic))
+            return
+
+        # make a joke
+        m = match(r'\.joke', message)
+        if m:
+            msg_room(choice(jokes))
             return
 
         # execute command
