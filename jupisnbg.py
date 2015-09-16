@@ -72,8 +72,8 @@ def message_callback(client, stanza): # get msgs
         # show a kitten
         m = match(r'\.kitten', message)
         if m:
-            with urlopen('http://random.cat/meow') as link:
-                pic = link.read()
+            link = urlopen('http://random.cat/meow')
+            pic = link.read()
             msg_room("uhm... ok. Here is a picture of a cute cat: %s." % (pic))
             return
 
@@ -86,8 +86,8 @@ def message_callback(client, stanza): # get msgs
         # query icndb
         m = match(r'\.icndb', message)
         if m:
-            with urlopen('http://api.icndb.com/jokes/random?escape=javascript&limitTo=explicit,nerdy') as query:
-                reply = loads(query.read())
+            query = urlopen('http://api.icndb.com/jokes/random?escape=javascript&limitTo=explicit,nerdy')
+            reply = loads(query.read())
             try:
                 msg_room(reply['value']['joke'].decode('string_escape'))
             except KeyError:
