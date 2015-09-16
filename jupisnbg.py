@@ -16,7 +16,7 @@ room_password = config.get('room', 'password')
 nick = config.get('room', 'nick')
 
 with open('witze.txt') as f:
-    jokes = f.readlines()
+    jokes = f.read().splitlines()
 
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
