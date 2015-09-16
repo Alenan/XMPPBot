@@ -2,7 +2,9 @@
 
 from ConfigParser import ConfigParser
 from getpass import getpass
+from glob import glob
 from json import loads
+from os.path import basename
 from random import choice, randint
 from re import match
 from urllib import urlopen
@@ -16,11 +18,12 @@ room = config.get('room', 'jid')
 room_password = config.get('room', 'password')
 nick = config.get('room', 'nick')
 
-with open('witze.txt') as f:
-    jokes = f.read().splitlines()
-
-with open('witze_anarchy.txt') as g:
-    jokes_anarchy = g.read().splitlines()
+# read joke files
+jokes = {}
+for filename in glob('witze/*'):
+    with open(filename) as f:
+        jokes[basename(filename)] = f.read().splitlines()
+jokes[''] = sum(jokes.values(), [])
 
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
@@ -81,23 +84,23 @@ def message_callback(client, stanza): # get msgs
             return
 
         # make a joke
-        m = match(r'''\.joke (["']?)(.*)\1''', message)
+        m = match(r'\.joke ?(.*)', message)
         if m:
-            text = m.group(2)
-            if text == "anarchy":
-                msg_room(choice(jokes_anarchy))
-            else:
-                msg_room(choice(jokes))
+            category = m.group(1)
+            try:
+                msg_room(choice(jokes[category]))
+            except KeyError:
+                msg_room(choice(jokes['']))
             return
 
         # query icndb
         m = match(r'\.icndb', message)
         if m:
-            query = urlopen('http://api.icndb.com/jokes/random?escape=javascript&limitTo=explicit,nerdy')
-            reply = loads(query.read())
             try:
+                query = urlopen('http://api.icndb.com/jokes/random?escape=javascript&limitTo=explicit,nerdy')
+                reply = loads(query.read())
                 msg_room(reply['value']['joke'].decode('string_escape'))
-            except KeyError:
+            except Exception:
                 msg_room('Chuck Norris can query ICNDB without getting an error.')
             return
 
