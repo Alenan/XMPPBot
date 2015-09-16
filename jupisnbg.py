@@ -5,6 +5,7 @@ from getpass import getpass
 from random import randint
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
+from urllib import *
 
 config = ConfigParser()
 config.read('jupisnbg.cfg')
@@ -62,6 +63,14 @@ def message_callback(client, stanza): # get msgs
                 msg_room('The dice shows %d (trust me).' % (randint(1, faces)))
             else:
                 msg_room('fuck you. -.-')
+            return
+        
+        # show a kitten
+        m = match(r'\.kitten', message)
+        if m:
+            link = urlopen('http://random.cat/meow')
+            pic = link.read()
+            msg_room("uhm... ok. Here is a picture of a cute cat: %s." % (pic))
             return
 
         # execute command
