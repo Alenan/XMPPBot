@@ -5,7 +5,7 @@ from getpass import getpass
 from random import randint
 from re import match
 from xmpp import Client, JID, Message, NS_MUC, Presence
-from urllib import *
+from urllib import urlopen
 
 config = ConfigParser()
 config.read('jupisnbg.cfg')
