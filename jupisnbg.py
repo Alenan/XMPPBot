@@ -84,7 +84,7 @@ def message_callback(client, stanza): # get msgs
             return
 
         # query icndb
-        m = match(r'\.icndb', messge)
+        m = match(r'\.icndb', message)
         if m:
             with urlopen('http://api.icndb.com/jokes/random?escape=javascript&limitTo=explicit,nerdy') as query:
                 reply = loads(query.read())
