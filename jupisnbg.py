@@ -2,10 +2,11 @@
 
 from ConfigParser import ConfigParser
 from getpass import getpass
+from json import loads
 from random import choice, randint
 from re import match
-from xmpp import Client, JID, Message, NS_MUC, Presence
 from urllib import urlopen
+from xmpp import Client, JID, Message, NS_MUC, Presence
 
 config = ConfigParser()
 config.read('jupisnbg.cfg')
@@ -64,7 +65,7 @@ def message_callback(client, stanza): # get msgs
         m = match(r'\.dice (\d+)', message)
         if m:
             faces = int(m.group(1))
-            msg_room('/me throws a dice with %d faces.' % (faces))
+            msg_room('/me rolls a dice with %d faces.' % (faces))
             if faces:
                 msg_room('The dice shows %d (trust me).' % (randint(1, faces)))
             else:
@@ -87,6 +88,17 @@ def message_callback(client, stanza): # get msgs
                 msg_room(choice(jokes_anarchy))
             else:
                 msg_room(choice(jokes))
+            return
+
+        # query icndb
+        m = match(r'\.icndb', message)
+        if m:
+            query = urlopen('http://api.icndb.com/jokes/random?escape=javascript&limitTo=explicit,nerdy')
+            reply = loads(query.read())
+            try:
+                msg_room(reply['value']['joke'].decode('string_escape'))
+            except KeyError:
+                msg_room('Chuck Norris can query ICNDB without getting an error.')
             return
 
         # execute command
