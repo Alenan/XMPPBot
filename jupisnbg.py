@@ -92,6 +92,7 @@ def message_callback(client, stanza): # get msgs
                 msg_room(reply['value']['joke'].decode('string_escape'))
             except KeyError:
                 msg_room('Chuck Norris can query ICNDB without getting an error.')
+            return
 
         # execute command
         m = match(r'\.([^ ]*) ?(.*)', message)
