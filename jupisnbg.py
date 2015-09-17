@@ -111,10 +111,25 @@ def message_callback(client, stanza): # get msgs
             return
         
         #random mlp episode
-        m = match(r'\.deescalation', message)
+        m = match(r'\.deescalate', message)
         if m:
             msg_room("Okay, everybody calm down and watch this: " + choice(mlp))
             return
+
+        # let me google that for you
+        m = match(r'''\.lmgtfy (["']?)(.*)\1''', message)
+        if m:
+            text = m.group(2)
+            if not text:
+                msg_room(' ')
+            else:
+                lmgtfy = "http://lmgtfy.com/?q="
+                search = text.split(' ')
+                for word in search:
+                    lmgtfy = lmgtfy + "+" + word
+                msg_room("I guess I can help you out: " + lmgtfy)
+            return
+
         ##
 
 
