@@ -25,6 +25,10 @@ for filename in glob('witze/*'):
         jokes[basename(filename)] = f.read().splitlines()
 jokes[''] = sum(jokes.values(), [])
 
+# read mlp files
+with open('mlp/s5e14') as g:
+    mlp = g.read().splitlines()
+
 def message_callback(client, stanza): # get msgs
     sender = stanza.getFrom()
     message = stanza.getBody()
@@ -75,6 +79,8 @@ def message_callback(client, stanza): # get msgs
                 msg_room('fuck you. -.-')
             return
         
+
+        ## Includes third-party APIs ore else ##
         # show a kitten
         m = match(r'\.kitten', message)
         if m:
@@ -103,6 +109,14 @@ def message_callback(client, stanza): # get msgs
             except Exception:
                 msg_room('Chuck Norris can query ICNDB without getting an error.')
             return
+        
+        #random mlp episode
+        m = match(r'\.deescalation', message)
+        if m:
+            msg_room("Okay, everybody calm down and watch this: " + choice(mlp))
+            return
+        ##
+
 
         # execute command
         m = match(r'\.([^ ]*) ?(.*)', message)
