@@ -129,6 +129,20 @@ def message_callback(client, stanza): # get msgs
                     lmgtfy = lmgtfy + "+" + word
                 msg_room("I guess I can help you out: " + lmgtfy)
             return
+        
+        # let me ddg that for you
+        m = match(r'''\.lmddgtfy (["']?)(.*)\1''', message)
+        if m:
+            text = m.group(2)
+            if not text:
+                msg_room(' ')
+            else:
+                lmddgtfy = "https://lmddgtfy.net/?q="
+                search = text.split(' ')
+                for word in search:
+                    lmddgtfy = lmddgtfy + "%20" + word
+                msg_room("I guess I can help you out like a duck could: " + lmddgtfy)
+            return
 
         ##
 
