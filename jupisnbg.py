@@ -52,7 +52,19 @@ def message_callback(client, stanza): # get msgs
             elif "--help" in receiver: 
                 client.send(Message(to = room, body = "Usage: [at]jupisnbg full_jabber_id_of_recipient message.", typ = "groupchat"))
 
-        # insult people
+        # CAPS LOCK MLP TRIGGER
+	wordlist = message.split()
+	capslock = 0
+	for word in wordlist:
+		if (word.isupper() == True) and (len(word) > 2): # more than 3 letters and capslocked
+			capslock = capslock + 1
+	if capslock > 2: # more than 3 caps locked words
+		msg_room("Okay, calm down " + sender_nick + " and watch this: " + choice(mlp))	
+		capslock = 0
+	else:
+		capslock = 0
+
+	# insult people
         m = match(r'\.insult (.*)', message)
         if m:
             msg_room('%s is an idiot.' % (m.group(1)))
@@ -145,8 +157,7 @@ def message_callback(client, stanza): # get msgs
             return
 
         ##
-
-
+	
         # execute command
         m = match(r'\.([^ ]*) ?(.*)', message)
         if m:
