@@ -6,3 +6,9 @@ password = the_user_password
 jid = room@server
 password = the_room_password
 nick = nickname
+
+[calendar]
+url = http(s)://domain:port/user/
+user = calendar_user
+password = calendar_password
+proxy = None

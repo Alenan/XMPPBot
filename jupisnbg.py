@@ -9,6 +9,7 @@ from random import choice, randint
 from re import match
 from urllib import urlopen
 from xmpp import Client, JID, Message, NS_MUC, Presence
+from dav import startcal, printcal
 
 config = ConfigParser()
 config.read('jupisnbg.cfg')
@@ -17,6 +18,11 @@ user_password = config.get('user', 'password')
 room = config.get('room', 'jid')
 room_password = config.get('room', 'password')
 nick = config.get('room', 'nick')
+calendar_url = config.get('calendar', 'url')
+calendar_username = config.get('calendar', 'user')
+calendar_password = config.get('calendar', 'password')
+calendar_proxy = None #config.get('calendar', 'proxy')
+
 
 # read joke files
 jokes = {}
@@ -157,7 +163,14 @@ def message_callback(client, stanza): # get msgs
             return
 
         ##
-	
+	# webdav synchro (test)
+	m =  match(r'\.calendar', message)
+	if m:
+            calendar = startcal(calendar_url, calendar_username, calendar_password, calendar_proxy)
+            calendarprint = printcal(calendar)
+            msg_room(calendarprint)
+            return	
+
         # execute command
         m = match(r'\.([^ ]*) ?(.*)', message)
         if m:
