@@ -1,14 +1,13 @@
 [user]
-jid = user@server/resource
-password = the_user_password
+jid = 'user@server/resource'
+password = 'the_user_password'
 
-[room]
-jid = room@server
-password = the_room_password
-nick = nickname
+[[room]]
+jid = 'room1@server'
+password = 'the_room1_password'
+nick = 'nickname1'
 
-[calendar]
-url = http(s)://domain:port/user/
-user = calendar_user
-password = calendar_password
-proxy = None
+[[room]]
+jid = 'room2@server'
+password = 'the_room2_password'
+nick = 'nickname2'
