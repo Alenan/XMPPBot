@@ -54,7 +54,7 @@ class Bot(object):
 
     def message_callback(self, client, stanza):
         sender = stanza.getFrom()
-        message = stanza.getBody()
+        message = unicode(stanza.getBody())
 
         for room in self.rooms:
             if sender.bareMatch(room):
