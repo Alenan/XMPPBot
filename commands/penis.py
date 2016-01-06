@@ -5,6 +5,7 @@ from command import Command
 
 
 penis = ['penis', 'Penis.', 'Penis!', 'PENIS!!1einself']
+vagina = ['vagina', 'Vagina.', 'Vagina!', 'VAGINA!!1einself']
 
 
 class Penis(Command):
@@ -12,13 +13,24 @@ class Penis(Command):
         # spam people
         m = match(r'\.penis ([^ ]+) ?(\d*)', message)
         if m:
-            num = m.group(2)
-            if num:
-                num = min(max(int(num), 0), 100)
-            else:
-                num = randint(1, 100)
-            for i in xrange(num):
-                self.bot.send_msg('%s/%s' % (room, m.group(1)), choice(penis))
+            self.spam(room, nick, m.group(1), penis, m.group(2))
+            return True
+
+        m = match(r'\.vagina ([^ ]+) ?(\d*)', message)
+        if m:
+            self.spam(room, nick, m.group(1), vagina, m.group(2))
             return True
 
         return False
+
+    def spam(self, room, aggressor, victim, messageset, num):
+            if num:
+                num = max(int(num), 1)
+            else:
+                num = randint(1, 100)
+
+            if num > 100:
+                victim = aggressor
+
+            for i in xrange(num):
+                self.bot.send_msg('%s/%s' % (room, victim), choice(messageset))
