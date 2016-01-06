@@ -4,21 +4,18 @@ from re import match
 from command import Command
 
 
-penis = ['penis', 'Penis.', 'Penis!', 'PENIS!!1einself']
-vagina = ['vagina', 'Vagina.', 'Vagina!', 'VAGINA!!1einself']
-
-
 class Penis(Command):
     def match(self, room, nick, message):
         # spam people
-        m = match(r'\.penis ([^ ]+) ?(\d*)', message)
+        m = match(r'\.(penis|vagina|anus) ([^ ]+) ?(\d*)', message)
         if m:
-            self.spam(room, nick, m.group(1), penis, m.group(2))
-            return True
-
-        m = match(r'\.vagina ([^ ]+) ?(\d*)', message)
-        if m:
-            self.spam(room, nick, m.group(1), vagina, m.group(2))
+            word = m.group(1)
+            messageset = [
+                    word.lower(),
+                    '%s.' % word.capitalize(),
+                    '%s!' % word.capitalize(),
+                    '%s!!einself' % word.upper()]
+            self.spam(room, nick, m.group(2), messageset, m.group(3))
             return True
 
         return False
@@ -29,7 +26,7 @@ class Penis(Command):
             else:
                 num = randint(1, 100)
 
-            if num > 100:
+            if num > randint(1, 100):
                 victim = aggressor
 
             for i in xrange(num):
